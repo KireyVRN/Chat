@@ -3,12 +3,13 @@ package com.company;
 import java.io.*;
 import java.net.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 
 public class Server {
 
-    static LinkedList<ServerThread> serverList = new LinkedList<>();
+    static ArrayList<ServerThread> serverList = new ArrayList<>();
     static MessageHistory messageHistory;
 
     public static void main(String[] args) throws IOException {
@@ -45,7 +46,7 @@ class ServerThread extends Thread {
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         nickName = in.readLine();
-        out.write("Hello " + nickName + "!" + "\n" + "\n");
+        out.write(" Hello " + nickName + "!" + "\n" + "\n");
         out.flush();
         Server.messageHistory.printMessageHistory(out);
         start();
@@ -57,24 +58,23 @@ class ServerThread extends Thread {
 
         try {
             String clientMessage;
-            while (true) {
-                clientMessage = in.readLine().trim();
+            while ((clientMessage = in.readLine()) != null) {
                 String messageTime = new SimpleDateFormat("HH:mm:ss").format(new Date());
-                if (clientMessage.equalsIgnoreCase("stop")) {
-                    Server.messageHistory.addMessage(nickName + " left the chat...");
+                if (clientMessage.trim().equalsIgnoreCase("stop")) {
+                    Server.messageHistory.addMessage(nickName + " left the chat..." + "\n");
                     for (ServerThread serverThread : Server.serverList) {
                         if (this != serverThread) {
-                            serverThread.out.write(nickName + " left the chat..." + "\n");
+                            serverThread.out.write(" " + nickName + " left the chat..." + "\n" + " " + "\n");
                             serverThread.out.flush();
                         }
                     }
                     this.closeServerThread();
                     break;
                 } else {
-                    System.out.println(messageTime + " " + nickName + ":  \"" + clientMessage + "\"");
-                    Server.messageHistory.addMessage(messageTime + " " + nickName + ":  \"" + clientMessage + "\"");
+                    System.out.println(messageTime + " " + nickName + ": " + clientMessage);
+                    Server.messageHistory.addMessage(" " + messageTime + " " + nickName + " :\n" + " \"" + clientMessage + "\"" + "\n");
                     for (ServerThread serverThread : Server.serverList) {
-                        serverThread.out.write(messageTime + " " + nickName + ":  \"" + clientMessage + "\"" + "\n");
+                        serverThread.out.write(" " + messageTime + " " + nickName + " :\n" + " \"" + clientMessage + "\"" + "\n" + "\n");
                         serverThread.out.flush();
                     }
                 }
@@ -89,12 +89,9 @@ class ServerThread extends Thread {
             socket.close();
             in.close();
             out.close();
-            for (ServerThread serverThread : Server.serverList) {
-                if (serverThread.equals(this)) serverThread.interrupt();
-                System.out.println("Clent " + nickName + " disconnected");
-                Server.serverList.remove(this);
-
-            }
+            this.interrupt();
+            System.out.println("Clent " + nickName + " disconnected");
+            Server.serverList.remove(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -119,9 +116,9 @@ class MessageHistory {
             try {
                 for (String string : history) {
                     writer.write(string + "\n");
+                    writer.flush();
                 }
-                writer.write(".........." + "\n");
-                writer.flush();
+
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
