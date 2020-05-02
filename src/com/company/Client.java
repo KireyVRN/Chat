@@ -5,9 +5,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Client extends JFrame implements Runnable {
 
@@ -20,7 +20,6 @@ public class Client extends JFrame implements Runnable {
     private Client(String ip, int port) {
 
         super("SUPER CHAT");
-
         initializeFrame();
 
         try {
@@ -45,7 +44,7 @@ public class Client extends JFrame implements Runnable {
                 messagesWindow.append(messageFromServer + "\n");
             }
         } catch (Exception e) {
-            System.out.println("FUCK & SHIT !!!");
+            System.out.println("FUCK! FUCK! FUCK!");
         }
     }
 
@@ -65,7 +64,7 @@ public class Client extends JFrame implements Runnable {
 
     private void initializeFrame() {
 
-        setSize(600, 800);
+        setSize(500, 800);
         setLocationRelativeTo(null);
 
         messagesWindow = new JTextArea();
@@ -79,7 +78,6 @@ public class Client extends JFrame implements Runnable {
         messageField.setBackground(Color.DARK_GRAY);
         messageField.setFont(new Font("Dialog", Font.BOLD, 17));
         messageField.setForeground(Color.ORANGE);
-        messageField.setSize(600, 300);
         messageField.addFocusListener(new FocusAdapter() {
 
             @Override
@@ -91,8 +89,8 @@ public class Client extends JFrame implements Runnable {
         JScrollPane jScrollPane = new JScrollPane(messagesWindow);
         add(jScrollPane, BorderLayout.CENTER);
 
-        JLabel date = new JLabel(new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH).format(new Date()));
-
+        LocalDate localDate = LocalDate.now();
+        JLabel date = new JLabel(localDate.getDayOfMonth() + " " + localDate.getMonth().name() + " " + localDate.getYear() + "   " + localDate.getDayOfWeek());
         add(date, BorderLayout.NORTH);
         date.setBackground(Color.BLACK);
 
@@ -117,20 +115,20 @@ public class Client extends JFrame implements Runnable {
         });
 
         JPanel jPanel = new JPanel(new BorderLayout());
-
         add(jPanel, BorderLayout.SOUTH);
         jPanel.add(sendMessageButton, BorderLayout.EAST);
         jPanel.add(messageField, BorderLayout.CENTER);
 
-        JDialog dialog = new JDialog(this, "Enter your name", true);
-        dialog.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        dialog.setSize(300, 120);
-        dialog.setLocationRelativeTo(null);
 
         JTextField nameField = new JTextField();
         nameField.setFont(new Font("Dialog", Font.BOLD, 30));
         nameField.setBackground(Color.DARK_GRAY);
         nameField.setForeground(Color.ORANGE);
+
+        JDialog dialog = new JDialog(this, "Enter your name", true);
+        dialog.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        dialog.setSize(300, 120);
+        dialog.setLocationRelativeTo(null);
         dialog.add(nameField, BorderLayout.CENTER);
 
         JButton ok = new JButton("OK");
