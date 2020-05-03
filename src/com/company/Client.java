@@ -8,8 +8,6 @@ import java.awt.event.*;
 import java.net.*;
 import java.io.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class Client extends JFrame implements Runnable {
 
@@ -91,11 +89,11 @@ public class Client extends JFrame implements Runnable {
         jPanel.add(sendButton, BorderLayout.EAST);
         jPanel.add(messageFieldPane, BorderLayout.CENTER);
 
-
         JTextField nameField = new JTextField();
-        nameField.setFont(new Font("Dialog", Font.BOLD, 30));
-        nameField.setBackground(Color.DARK_GRAY);
-        nameField.setForeground(Color.ORANGE);
+        nameField.setFont(new Font("Dialog", Font.PLAIN, 25));
+        nameField.setBackground(new Color(50, 104, 118));
+        nameField.setForeground(Color.WHITE);
+        nameField.setCaretColor(Color.WHITE);
 
         JDialog dialog = new JDialog(this, "Enter your name", true);
         dialog.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -104,6 +102,8 @@ public class Client extends JFrame implements Runnable {
         dialog.add(nameField, BorderLayout.CENTER);
 
         JButton ok = new JButton("OK");
+        ok.setBackground(Color.DARK_GRAY);
+        ok.setForeground(Color.WHITE);
         ok.addActionListener(e -> {
             if (!nameField.getText().isEmpty() && nameField.getText().trim().length() != 0) {
                 nickName = nameField.getText();
@@ -141,32 +141,35 @@ public class Client extends JFrame implements Runnable {
     }
 
     private void initMessageWindow() {
+
         messagesWindow = new JTextArea();
         messagesWindow.setEditable(false);
         messagesWindow.setLineWrap(true);
-        messagesWindow.setBackground(Color.DARK_GRAY);
-        messagesWindow.setForeground(Color.WHITE);
+        messagesWindow.setBackground(new Color(40, 40, 40));
+        messagesWindow.setForeground(new Color(154, 201, 252));
         messagesWindow.setFont(new Font("Dialog", Font.PLAIN, 17));
-
         DefaultCaret caret = (DefaultCaret) messagesWindow.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }
 
     private void initInputArea() {
+
         inputArea = new JTextArea("Enter your message");
-        inputArea.setBackground(Color.DARK_GRAY);
-        inputArea.setFont(new Font("Dialog", Font.BOLD, 17));
-        inputArea.setForeground(Color.ORANGE);
+        inputArea.setBackground(new Color(80, 80, 80));
+        inputArea.setFont(new Font("Dialog", Font.PLAIN, 19));
+        inputArea.setForeground(Color.WHITE);
         inputArea.setLineWrap(true);
         inputArea.setWrapStyleWord(true);
         inputArea.setRows(3);
+        inputArea.setCaretColor(Color.WHITE);
+
         inputArea.addKeyListener(new KeyAdapter() {
 
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER && !inputArea.getText().trim().isEmpty()) {
                     try {
-                        out.write(inputArea.getText()+ "\n");
+                        out.write(inputArea.getText() + "\n");
                         out.flush();
                         if (inputArea.getText().trim().equalsIgnoreCase("stop")) {
                             closeClient();
@@ -197,8 +200,12 @@ public class Client extends JFrame implements Runnable {
     }
 
     private void initButton() {
+
         sendButton = new JButton("SEND");
-        sendButton.setBackground(Color.ORANGE);
+        sendButton.setBackground(new Color(63, 131, 160));
+        sendButton.setFont(new Font("Dialog", Font.BOLD, 20));
+        sendButton.setForeground(Color.WHITE);
+
         sendButton.addActionListener(e -> {
 
             if (!inputArea.getText().trim().isEmpty()) {
@@ -218,7 +225,7 @@ public class Client extends JFrame implements Runnable {
         });
     }
 
-    private void notifyWithSound(){
+    private void notifyWithSound() {
         Applet.newAudioClip(Client.class.getResource("send.aiff")).play();
     }
 }

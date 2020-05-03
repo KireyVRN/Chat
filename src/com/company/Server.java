@@ -41,7 +41,7 @@ public class Server {
             nickName = in.readLine();
             for (ServerThread serverThread : serverList) {
                 if (serverThread != this) {
-                    serverThread.out.write(" " + nickName + " joined the chat" + "\n");
+                    serverThread.out.write(" " + nickName + " joined the chat" + "\n" + "\n");
                     serverThread.out.flush();
                 }
             }
