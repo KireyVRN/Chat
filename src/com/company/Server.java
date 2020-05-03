@@ -13,10 +13,8 @@ public class Server {
 
     public static void main(String[] args) throws IOException {
 
-        ServerSocket serverSocket = new ServerSocket(8888);
-        System.out.println("Server started");
-
-        try {
+        try (ServerSocket serverSocket = new ServerSocket(8888)) {
+            System.out.println("Server started");
             while (true) {
                 Socket socket = serverSocket.accept();
                 try {
@@ -25,8 +23,6 @@ public class Server {
                     socket.close();
                 }
             }
-        } finally {
-            serverSocket.close();
         }
     }
 
