@@ -18,6 +18,8 @@ public class Client extends JFrame implements Runnable {
     private JTextArea messagesWindow;
     private JTextArea inputArea;
     private JButton sendButton;
+    private java.applet.AudioClip soundOfMessage;
+    private java.applet.AudioClip soundOfExit;
 
     private Client(String ip, int port) {
 
@@ -42,9 +44,13 @@ public class Client extends JFrame implements Runnable {
         String messageFromServer;
         try {
             while ((messageFromServer = in.readLine()) != null) {
-                System.out.println(messageFromServer);
-                notifyWithSound();
                 messagesWindow.append(messageFromServer + "\n");
+                if (messageFromServer.contains("left the chat...")) {
+                    soundOfExit.play();
+                } else {
+                    soundOfMessage.play();
+                }
+                System.out.println(messageFromServer);
             }
         } catch (Exception e) {
             System.out.println("FUCK! FUCK! FUCK!");
@@ -135,6 +141,8 @@ public class Client extends JFrame implements Runnable {
             }
         });
 
+        soundOfMessage = Applet.newAudioClip(Client.class.getResource("send.aiff"));
+        soundOfExit = Applet.newAudioClip(Client.class.getResource("sendFire.aiff"));
         getRootPane().setDefaultButton(sendButton);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
@@ -146,7 +154,8 @@ public class Client extends JFrame implements Runnable {
         messagesWindow.setEditable(false);
         messagesWindow.setLineWrap(true);
         messagesWindow.setBackground(new Color(40, 40, 40));
-        messagesWindow.setForeground(new Color(154, 201, 252));
+        messagesWindow.setForeground(new Color(190, 233, 120));
+        //RESERVE VARIANT     messagesWindow.setForeground(new Color(154, 201, 252));
         messagesWindow.setFont(new Font("Dialog", Font.PLAIN, 17));
         DefaultCaret caret = (DefaultCaret) messagesWindow.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
@@ -202,7 +211,8 @@ public class Client extends JFrame implements Runnable {
     private void initButton() {
 
         sendButton = new JButton("SEND");
-        sendButton.setBackground(new Color(63, 131, 160));
+        sendButton.setBackground(new Color(106, 170, 60));
+        //RESERVE VARIANT      sendButton.setBackground(new Color(63, 131, 160));
         sendButton.setFont(new Font("Dialog", Font.BOLD, 20));
         sendButton.setForeground(Color.WHITE);
 
@@ -224,9 +234,4 @@ public class Client extends JFrame implements Runnable {
             }
         });
     }
-
-    private void notifyWithSound() {
-        Applet.newAudioClip(Client.class.getResource("send.aiff")).play();
-    }
 }
-
